@@ -1,0 +1,21 @@
+version: '3'
+services:
+  go:
+    build: 
+      context: ./backend/build
+    volumes:
+      - ./backend:/go/src
+    ports:
+      - 1324:1324
+    tty: true
+  
+  vue:
+    build: 
+      context: ./frontend/build
+    volumes:
+      - ./frontend:/app
+    ports:
+      - 8080:8080
+    tty: true
+    stdin_open: true
+  
