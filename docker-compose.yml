@@ -18,4 +18,16 @@ services:
       - 8080:8080
     tty: true
     stdin_open: true
+
+  postgres:
+    image: postgres:11-alpine
+    restart: always
+    environment:
+      - POSTGRES_DB=default
+      - POSTGRES_USER=default
+      - POSTGRES_PASSWORD=secret
+    volumes:
+      - ./backend/database:/var/lib/postgresql/data
+    ports:
+      - 5434:5432
   

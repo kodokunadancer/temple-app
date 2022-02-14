@@ -1,7 +1,8 @@
 package main
 
 import (
-	"net/http"
+	"log"
+	"temple-app/backend/pkg/handler"
 
 	"github.com/labstack/echo"
 	"github.com/labstack/echo/middleware"
@@ -9,20 +10,27 @@ import (
 
 func newRouter() *echo.Echo {
 	e := echo.New()
+	e.Use(middleware.CORS())
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
+	e.Use(logMiddleware)
 
-	//e.Static("/assets", "public/assets")
-
-	e.File("/", "public/index.html")
+	e.File("/", "../web/index.html")
 
 	api := e.Group("/api")
-	api.GET("/hello", hello)
+	api.POST("/signup", handler.SignUp)
 
 	return e
 }
 
-func hello(c echo.Context) error {
-	return c.String(http.StatusOK, "Hello, World!")
+func logMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
+	return func(c echo.Context) error {
+		log.Println("before action")
+		if err := next(c); err != nil {
+			c.Error(err)
+		}
+		log.Println("after action")
+		return nil
+	}
 }

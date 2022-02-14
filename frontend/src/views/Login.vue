@@ -60,7 +60,6 @@ export default class LoginComponent extends Vue {
   }
 
   async register() {
-    console.log(this.form)
     const response: any = await axios.post('http://localhost:1324/api/signup', {
       params: { form: this.form }
     })
