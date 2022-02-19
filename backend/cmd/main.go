@@ -1,6 +1,11 @@
 package main
 
+import (
+	"log"
+	"net/http"
+)
+
 func main() {
-	router := newRouter()
-	router.Logger.Fatal(router.Start(":1324"))
+	mux := routing()
+	log.Fatal(http.ListenAndServe(":8081", mux))
 }

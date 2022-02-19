@@ -6,7 +6,7 @@ services:
     volumes:
       - ./backend:/go/src
     ports:
-      - 1324:1324
+      - 8081:8081
     tty: true
   
   vue:

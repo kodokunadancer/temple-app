@@ -1,36 +1,27 @@
 package main
 
 import (
+	"fmt"
 	"log"
-	"temple-app/backend/pkg/handler"
-
-	"github.com/labstack/echo"
-	"github.com/labstack/echo/middleware"
+	"net/http"
 )
 
-func newRouter() *echo.Echo {
-	e := echo.New()
-	e.Use(middleware.CORS())
-
-	e.Use(middleware.Logger())
-	e.Use(middleware.Recover())
-	e.Use(logMiddleware)
-
-	e.File("/", "../web/index.html")
-
-	api := e.Group("/api")
-	api.POST("/signup", handler.SignUp)
-
-	return e
+func routing() *http.ServeMux {
+	mux := http.NewServeMux()
+	mux.Handle("/", logMiddleware(http.HandlerFunc(hello)))
+	return mux
 }
 
-func logMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
-	return func(c echo.Context) error {
-		log.Println("before action")
-		if err := next(c); err != nil {
-			c.Error(err)
-		}
-		log.Println("after action")
-		return nil
+func logMiddleware(next http.HandlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		log.Println("before")
+		next.ServeHTTP(w, r)
+		log.Println("after")
 	}
+}
+
+// レスポンスで"Hello World"と返すAPI
+func hello(w http.ResponseWriter, _ *http.Request) {
+	w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "Hello World")
 }
